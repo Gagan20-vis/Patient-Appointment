@@ -1,0 +1,79 @@
+
+DateBase Creation - 
+
+CREATE DATABASE `patientappointment` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+
+Appointment Table creation - 
+
+CREATE TABLE `appointment` (
+  `S_no` int NOT NULL AUTO_INCREMENT,
+  `Pat_Email` varchar(50) NOT NULL DEFAULT '',
+  `Doct_Email` varchar(50) NOT NULL DEFAULT '',
+  `Status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Pending',
+  `Time` time DEFAULT NULL,
+  `Illness` varchar(50) DEFAULT NULL,
+  `Date` date DEFAULT NULL,
+  `App_Date` date DEFAULT NULL,
+  `App_Time` time DEFAULT NULL,
+  PRIMARY KEY (`S_no`) USING BTREE,
+  KEY `fk_patients` (`Pat_Email`) USING BTREE,
+  KEY `fk_doctors` (`Doct_Email`) USING BTREE,
+  CONSTRAINT `fk_doctors` FOREIGN KEY (`Doct_Email`) REFERENCES `doctor` (`D_Email`),
+  CONSTRAINT `fk_patient` FOREIGN KEY (`Pat_Email`) REFERENCES `patient` (`P_Email`),
+  CONSTRAINT `appointment_chk_1` CHECK ((`Status` in (_utf8mb4'Pending',_utf8mb4'Denied',_utf8mb4'Approved')))
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+Doctor Table creation -
+
+CREATE TABLE `doctor` (
+  `D_id` int NOT NULL AUTO_INCREMENT,
+  `D_FName` varchar(50) DEFAULT NULL,
+  `D_LName` varchar(50) DEFAULT NULL,
+  `D_Email` varchar(50) DEFAULT NULL,
+  `D_Gender` varchar(6) DEFAULT NULL,
+  `D_Age` int DEFAULT NULL,
+  `D_Qualification` varchar(100) DEFAULT NULL,
+  `D_password` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`D_id`),
+  UNIQUE KEY `D_Email` (`D_Email`),
+  KEY `idx_d_email` (`D_Email`),
+  CONSTRAINT `doctor_chk_1` CHECK ((`D_Gender` in (_utf8mb4'MALE',_utf8mb4'FEMALE')))
+) ENGINE=InnoDB AUTO_INCREMENT=1020 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+Patient Table creation - 
+
+CREATE TABLE `patient` (
+  `P_id` int NOT NULL AUTO_INCREMENT,
+  `P_FName` varchar(50) DEFAULT NULL,
+  `P_LName` varchar(50) DEFAULT NULL,
+  `P_Email` varchar(50) DEFAULT NULL,
+  `P_Age` int DEFAULT NULL,
+  `P_gender` varchar(6) DEFAULT NULL,
+  `P_password` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`P_id`),
+  UNIQUE KEY `P_Email` (`P_Email`),
+  KEY `idx_p_email` (`P_Email`),
+  CONSTRAINT `gender_chk` CHECK ((`P_gender` in (_utf8mb4'MALE',_utf8mb4'FEMALE')))
+) ENGINE=InnoDB AUTO_INCREMENT=1027 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+Triggers - 
+
+1.
+BEGIN
+  IF EXISTS (SELECT 1 FROM doctor WHERE D_Email = NEW.P_Email) THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Email is already exists.';
+  END IF;
+END
+
+2.
+BEGIN
+  IF EXISTS (SELECT 1 FROM patient WHERE P_Email = NEW.D_Email) THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Email is already exists.';
+  END IF;
+END
