@@ -55,7 +55,9 @@ if (session.getAttribute("email") == null) {
 			</div>
 		</div>
 	</nav>
-	<h1>Hello <%=session.getAttribute("Username")%></h1>
+	<h1 id="myheading">
+		Hello
+		<%=session.getAttribute("Username")%> !</h1>
 	<div class="table-container">
 		<table class="table">
 			<thead class="table-primary">
@@ -70,7 +72,8 @@ if (session.getAttribute("email") == null) {
 			<tbody class="table-secondary">
 				<%
 				ArrayList<DoctBean> list = (ArrayList<DoctBean>) session.getAttribute("list");
-				for (DoctBean db : list) {
+				if (list != null)
+					for (DoctBean db : list) {
 				%>
 				<tr>
 					<td><%=db.getD_FName()%></td>
@@ -119,17 +122,16 @@ if (session.getAttribute("email") == null) {
 										data-target="#timepicker" autocomplete="off">
 								</div>
 							</div>
-							<input type="submit" name="insert" id="insert"
-								value="Send Appointment" class="btn btn-outline-info"
-								style="border-radius: 50px;" />
+							<div class="modal-footer"
+								style="display: flex; justify-content: center; width: 100%;">
+								<input type="submit" name="insert" id="insert"
+									value="Send Appointment" class="btn btn-outline-info"
+									style="border-radius: 50px; width: 75%; color: black;" />
+							</div>
 						</form>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<div class="d-grid gap-2 col-6 mx-auto">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
+
 			</div>
 		</div>
 	</div>
@@ -176,9 +178,6 @@ if (session.getAttribute("email") == null) {
 						url : "SaveAppointmentServlet",
 						method : "POST",
 						data : $('#insert_form').serialize(),
-						beforeSend : function() {
-							$('#insert').val("Inserting");
-						},
 						success : function(data) {
 							$('#insert_form')[0].reset();
 							$('#add_data_Modal').modal('hide');

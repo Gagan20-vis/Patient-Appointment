@@ -83,10 +83,10 @@ String name = dd.getName((String) session.getAttribute("email"));
 					<td><%=ab.getApp_Date()%></td>
 					<td>
 						<button class="mybtn btn-danger" id="deny_btn"
-							onclick="changeTdContent(this, 'Deny')" data-id="<%=ab.getId()%>">
+							onclick="changeTdContent(this, 'Denied')" data-id="<%=ab.getId()%>">
 							Deny</button>
 						<button class="mybtn btn-success" id="approve_btn"
-							onclick="changeTdContent(this, 'Approve')"
+							onclick="changeTdContent(this, 'Approved')"
 							data-id="<%=ab.getId()%>">Approve</button>
 					</td>
 				</tr>
